@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convite Especial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0f1923;
+            color: #ece8e1;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 1;
+        }
+
+        /* --- TELA DE START (Para liberar o áudio) --- */
+        #tela-start {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0f1923;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.5s ease;
+        }
+
+        /* --- CONTAINER PRINCIPAL DO CONVITE --- */
+        .container {
+            display: none; /* Escondido até ela clicar no start */
+            position: relative;
+            z-index: 2;
+            background: rgba(15, 25, 35, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #ff4655;
+            padding: 50px 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+            opacity: 0;
+            transform: translateY(40px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .container.animar {
+            display: block;
+            animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.2rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: #ece8e1;
+            letter-spacing: 1px;
+        }
+
+        .highlight { color: #ff4655; }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            color: #a0aab0;
+            font-weight: 500;
+        }
+
+        .botoes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            letter-spacing: 1.5px;
+            padding: 12px 30px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            background: transparent;
+            color: #ece8e1;
+            outline: none;
+            width: 140px;
+            transition: color 0.3s;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: transparent;
+            border: 1px solid #ece8e1;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            transition: all 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn:hover { color: #0f1923; }
+        
+        .btn:hover::before {
+            background-color: #ff4655;
+            border-color: #ff4655;
+        }
+
+        .btn-sim::before {
+            border-color: #ff4655;
+            background-color: rgba(255, 70, 85, 0.1);
+        }
+
+        /* Botão START maior */
+        .btn-start {
+            width: 200px;
+            font-size: 1.5rem;
+            color: #ff4655;
+        }
+        .btn-start::before { border-color: #ff4655; }
+        .btn-start:hover { color: #0f1923; }
+
+        #resposta {
+            display: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            color: #ff4655;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            animation: glitchFade 0.5s ease forwards;
+        }
+
+        @keyframes glitchFade {
+            0% { opacity: 0; transform: scale(0.95); filter: blur(4px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <audio id="musica-fundo" loop>
+        <source src="/musica-valorant.mp3.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <div id="tela-start">
+        <div style="color: #ff4655; font-family: 'Oswald'; font-size: 3rem; margin-bottom: 20px; font-weight: bold; letter-spacing: -2px;">V</div>
+        <button class="btn btn-start" onclick="iniciar()">INICIAR</button>
+    </div>
+
+    <div class="container" id="tela-principal">
+        <h1>Aceita jogar <span class="highlight">Valorant</span> comigo hoje?</h1>
+        <p>Você é muito especial para mim e espero que possamos nos conhecer mais.</p>
+        
+        <div class="botoes" id="area-botoes">
+            <button class="btn btn-sim" onclick="responder(true)">Sim</button>
+            <button class="btn btn-nao" onclick="responder(false)">Não</button>
+        </div>
+
+        <div id="resposta"></div>
+    </div>
+
+    <script>
+        function iniciar() {
+            // Toca a música
+            const musica = document.getElementById('musica-fundo');
+            musica.volume = 0.5; // Deixa o volume na metade para não estourar o ouvido
+            musica.play();
+
+            // Esconde a tela de start
+            const telaStart = document.getElementById('tela-start');
+            telaStart.style.opacity = '0';
+            
+            setTimeout(() => {
+                telaStart.style.display = 'none';
+                // Mostra a tela do convite com a animação
+                document.getElementById('tela-principal').classList.add('animar');
+            }, 500); // Espera o fade out terminar
+        }
+
+        function responder(aceitou) {
+            const areaBotoes = document.getElementById('area-botoes');
+            const resposta = document.getElementById('resposta');
+
+            areaBotoes.style.display = 'none';
+            resposta.style.display = 'block';
+
+            if (aceitou) {
+                resposta.innerText = "Te vejo mais tarde be";
+                resposta.style.color = "#00ffcc";
+            } else {
+                resposta.innerText = "Tudo bem nene";
+                resposta.style.color = "#ece8e1";
+            }
+        }
+    </script>
+
+</body>
+</html>
